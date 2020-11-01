@@ -1,25 +1,66 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import algoliasearch from 'algoliasearch/lite';
+import './parent/app.css';
 
-function App() {
+import {
+  InstantSearch,
+  Hits,
+  SearchBox,
+  Pagination,
+  Highlight,
+  ClearRefinements,
+  RefinementList,
+  Configure,
+} from 'react-instantsearch-dom';
+import PropTypes from 'prop-types';
+
+
+const searchClient = algoliasearch(
+  'B1G2GM9NG0',
+  'aadef574be1f9252bb48d4ea09b5cfe5'
+);
+
+class App extends Component {
+  render() {
+    return (
+      <div className="ais-InstantSearch">
+        <h1>E-COMMERCE</h1>
+        <InstantSearch indexName="demo_ecommerce" searchClient={searchClient}>
+          <div className="left-panel">
+            <ClearRefinements />  
+            <h2>Brands</h2>
+            <RefinementList attribute="brand" />  
+            <Configure hitsPerPage={8} />
+          </div>
+          <div className="right-panel">
+            <SearchBox />  
+            <Hits hitComponent={Hit} />   
+            <Pagination />  
+          </div>
+        </InstantSearch>
+      </div>
+    );
+  }
+}
+
+function Hit(props) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <img src={props.hit.image} align="left" alt={props.hit.name} />
+      <div className="hit-name">
+        <Highlight attribute="name" hit={props.hit} />    
+      </div>
+      <div className="hit-description">
+        <Highlight attribute="description" hit={props.hit} />
+      </div>
+      <div className="hit-price">${props.hit.price}</div>
     </div>
   );
 }
+
+
+Hit.propTypes = {
+  hit: PropTypes.object.isRequired,
+};
 
 export default App;
